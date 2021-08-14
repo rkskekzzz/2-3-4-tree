@@ -5,13 +5,13 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class HW2 {
-	
+
 	public static void main(String[] args) {
 		Tree234<String, Integer> st = new Tree234<>();
-		Scanner sc = new Scanner(System.in);	
-		System.out.print("입력 파일 이름? ");
-		String fname = sc.nextLine();	// 파일 이름을 입력
-		System.out.print("난수 생성을 위한 seed 값? ");
+		Scanner sc = new Scanner(System.in);
+		System.out.print("file name? ");
+		String fname = sc.nextLine();
+		System.out.print("seed for random value? ");
 		long seed = sc.nextLong();
 		Random rand = new Random(seed);
 		sc.close();
@@ -25,29 +25,29 @@ public class HW2 {
 				else	st.put(word, st.get(word) + 1);
 			}
 			long end = System.currentTimeMillis();
-			System.out.println("입력 완료: 소요 시간 = " + (end-start) + "ms");
-			
-			System.out.println("### 생성 시점의 트리 정보");
+			System.out.println("Input Done: Time = " + (end-start) + "ms");
+
+			System.out.println("### Tree info");
 			print_tree(st);
 			ArrayList<String> keyList = (ArrayList<String>) st.keys();
 			int loopCount = (int)(keyList.size() * 0.95);
 			for (int i = 0; i < loopCount; i++) {
 				int deletedIndex = rand.nextInt(keyList.size());
 				String key = keyList.get(deletedIndex);
-				//st.delete(key);									// 주석 처리 가능
+				//st.delete(key);									// yet
 				keyList.remove(deletedIndex);
 			}
-			//System.out.println("\n### 키 삭제 후 트리 정보");			// 주석 처리 가능
-			//print_tree(st);										// 주석 처리 가능
+			//System.out.println("\n### 키 삭제 후 트리 정보");			// yet
+			//print_tree(st);										// yet
 		} catch (FileNotFoundException e) { e.printStackTrace(); }
 		if (sc != null)
 			sc.close();
 	}
-	
+
 	private static void print_tree(Tree234<String, Integer> st) {
-		System.out.println("등록된 단어 수 = " + st.size());		
-		System.out.println("트리의 깊이 = " + st.depth());		
-		
+		System.out.println("word count in file = " + st.size());
+		System.out.println("depth of Tree = " + st.depth());
+
 		String maxKey = "";
 		int maxValue = 0;
 		for (String word : st.keys())
@@ -55,7 +55,7 @@ public class HW2 {
 				maxValue = st.get(word);
 				maxKey = word;
 			}
-		System.out.println("가장 빈번히 나타난 단어와 빈도수: " + maxKey + " " + maxValue);
+		System.out.println("most frequent words and word count : " + maxKey + " " + maxValue);
 	}
 }
 
@@ -65,11 +65,11 @@ public class HW2 {
 class Tree234<K extends Comparable<K>, V> {
 	protected Node<K, V> root;
 	int count = 0;
-	
+
 	class Node<K, V> {
 		K key_left, key_middle, key_right;
 		V value_left, value_middle, value_right;
-		
+
 
 		Node<K, V> left, left_middle, right_middle, right, parent;
 
@@ -142,7 +142,7 @@ class Tree234<K extends Comparable<K>, V> {
 			}
 			else {
 				getnode.key_right = key;
-				getnode.value_right = value;	
+				getnode.value_right = value;
 			}
 			count++;
 			return;
@@ -192,7 +192,7 @@ class Tree234<K extends Comparable<K>, V> {
 		} else {
 			needMerge = new Node<>(start.key_right, start.value_right);
 			linkChild(needMerge, start, newNode, null, null);
-			
+
 		}
 		start.key_right = null;
 		start.value_right = null;
@@ -206,7 +206,7 @@ class Tree234<K extends Comparable<K>, V> {
 	}
 	public int depth() {
 		int n=0;
-		
+
 		Node<K,V> startNode = root;
 		while(startNode!=null) {
 			startNode = startNode.left;
@@ -218,7 +218,7 @@ class Tree234<K extends Comparable<K>, V> {
 		Node<K,V> searchNode = getNode(word,root);
 		if(searchNode==null)
 			return false;
-		if(word.equals(searchNode.key_left)||word.equals(searchNode.key_middle)||word.equals(searchNode.key_right)) 
+		if(word.equals(searchNode.key_left)||word.equals(searchNode.key_middle)||word.equals(searchNode.key_right))
 			return true;
 		else
 			return false;
@@ -229,7 +229,7 @@ class Tree234<K extends Comparable<K>, V> {
 	public V get(K word) {
 		Node<K,V> searchNode = getNode(word,root);
 		if(searchNode==null)
-			return null; 
+			return null;
 		if(word.equals(searchNode.key_left))
 			return searchNode.value_left;
 		else if(word.equals(searchNode.key_middle))
@@ -244,14 +244,14 @@ class Tree234<K extends Comparable<K>, V> {
 			if (needMerge.key_left.compareTo(parent.key_left) > 0) {
 				parent.key_middle = needMerge.key_left;
 				parent.value_middle = needMerge.value_left;
-				
+
 				linkChild(parent, parent.left, needMerge.left,needMerge.left_middle,null);
 			} else {
 				parent.key_middle = parent.key_left;
 				parent.value_middle = parent.value_left;
 				parent.key_left = needMerge.key_left;
 				parent.value_left = needMerge.value_left;
-				
+
 				linkChild(parent,needMerge.left,needMerge.left_middle ,parent.left_middle,null);
 			}
 		} else if (parent.key_right == null) {
@@ -262,19 +262,19 @@ class Tree234<K extends Comparable<K>, V> {
 				parent.value_middle = parent.value_left;
 				parent.key_left = needMerge.key_left;
 				parent.value_left = needMerge.value_left;
-				
+
 				linkChild(parent, needMerge.left,needMerge.left_middle ,parent.left_middle ,parent.right_middle );
 			} else if (needMerge.key_left.compareTo(parent.key_middle) < 0) {
 				parent.key_right = parent.key_middle;
 				parent.value_right = parent.value_middle;
 				parent.key_middle = needMerge.key_left;
 				parent.value_middle = needMerge.value_left;
-				
+
 				linkChild(parent,parent.left ,needMerge.left ,needMerge.left_middle ,parent.right_middle );
 			} else {
 				parent.key_right = needMerge.key_left;
 				parent.value_right = needMerge.value_left;
-				
+
 				linkChild(parent,parent.left ,parent.left_middle ,needMerge.left,needMerge.left_middle );
 			}
 		} else {
@@ -302,10 +302,10 @@ class Tree234<K extends Comparable<K>, V> {
 
 	private Node<K, V> getNode(K key, Node<K, V> start) {
 		if (start == null)
-			return null; 
-		if (start.left == null) 
+			return null;
+		if (start.left == null)
 			return start;
-		if (key.compareTo(start.key_left) < 0) 
+		if (key.compareTo(start.key_left) < 0)
 			return getNode(key, start.left);
 		if (key.equals(start.key_left))
 			return start;
@@ -363,9 +363,9 @@ class Tree234<K extends Comparable<K>, V> {
 	public void print(Node<K,V> start) {
 		if(start==null) return;
 		System.out.println(
-				"왼쪽 : " + start.key_left + "," + start.value_left
-				+ "  중간 : " + start.key_middle + "," + start.value_middle
-				+ "  오른쪽 : " + start.key_right + "," + start.value_right);
+				"left : " + start.key_left + "," + start.value_left
+				+ "  mid : " + start.key_middle + "," + start.value_middle
+				+ "  right : " + start.key_right + "," + start.value_right);
 	}
 
 }
